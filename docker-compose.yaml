@@ -6,3 +6,9 @@ services:
       context:
     ports:
       - "3001:3001"
+    environment:
+      - DATABASE_URL: $DATABASE_URL
+      - NEXTAUTH_SECRET: $NEXTAUTH_SECRET
+      - NEXTAUTH_URL: $NEXTAUTH_URL
+      - GOOGLE_CLIENT_ID: $GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET: $GOOGLE_CLIENT_SECRET
