@@ -1,4 +1,3 @@
-"use client";
 import { LayoutProvider } from "../layout/context/layoutcontext";
 
 import "primeflex/primeflex.css";

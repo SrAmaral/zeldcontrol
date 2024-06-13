@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+/* eslint-disable @typescript-eslint/ban-types */
 // FullCalendar Types
-import { EventInput } from "@fullcalendar/core";
+import { type EventInput } from "@fullcalendar/core";
 
 // Chart.js Types
-import { ChartData, ChartOptions } from "chart.js";
+import { type ChartData, type ChartOptions } from "chart.js";
 
 // Custom Types
 type InventoryStatus = "INSTOCK" | "LOWSTOCK" | "OUTOFSTOCK";

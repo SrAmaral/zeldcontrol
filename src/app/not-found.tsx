@@ -1,5 +1,5 @@
-import { type Page } from "@/../types";
 import Link from "next/link";
+import { type Page } from "../types";
 
 const NotFound: Page = () => {
   return (

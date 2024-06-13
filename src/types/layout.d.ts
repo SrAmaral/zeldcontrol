@@ -1,13 +1,10 @@
-import React, {
-    ReactElement,
-    Dispatch,
-    SetStateAction,
-    HTMLAttributeAnchorTarget,
-    ReactNode,
-} from "react";
-import { NextPage } from "next";
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { type NextPage } from "next";
+import { type Toast } from "primereact/toast";
+import type React from "react";
+import { type Dispatch, type HTMLAttributeAnchorTarget, type ReactElement, type ReactNode, type SetStateAction } from "react";
 import type { Demo } from "./demo";
-import { Toast } from "primereact/toast";
 
 /* Next & Layout Types */
 type Page<P = {}> = NextPage<P> & {
