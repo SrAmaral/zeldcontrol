@@ -6,11 +6,11 @@ WORKDIR /app
 # Copy the dependencies file to the working directory
 COPY package.json .
 
-# Install dependencies
-RUN npm install
-
 # Copy the content of the local src directory to the working directory
 COPY . .
+
+# Install dependencies
+RUN npm install
 
 # Build the app
 RUN npm run build
