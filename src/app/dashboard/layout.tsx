@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import SessionData from "~/components/Session/SessionData";
 import { getServerAuthSession } from "~/server/auth";
@@ -10,13 +11,12 @@ interface MainLayoutProps {
 export default async function MainLayout({ children }: MainLayoutProps) {
   const session = await getServerAuthSession();
 
-  console.log(session);
-  // if (!session) {
-  //   redirect("/");
-  // }
+  if (!session) {
+    redirect("/");
+  }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<p>Loading...</p>}>
       <SessionData session={session} />
       <Layout>{children}</Layout>
     </Suspense>

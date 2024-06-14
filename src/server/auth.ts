@@ -52,6 +52,28 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
   providers: [
+    CredentialsProvider({
+      name: 'credentials',
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if(!credentials) {
+          return null
+        }
+
+        if(credentials.email === "admin@admin.com" && credentials.password === "admin") {
+          return {
+            id: "1",
+            name: "admin",
+            email: "admin@admin.com",
+            image: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50"
+          }
+        }
+        return null
+      }
+    }),
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
@@ -61,28 +83,6 @@ export const authOptions: NextAuthOptions = {
           access_type: "offline",
           response_type: "code"
         }
-      }
-    }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials) {
-        if(!credentials) {
-          return null
-        }
-        
-        if(credentials.email === "admin@admin.com" && credentials.password === "admin") {
-          console.log('PASOUUUUUU')
-          return {
-            id: "1",
-            name: "admin",
-            email: "admin@admin.com"
-          }
-        }
-        // return null
       }
     }),
   ],
