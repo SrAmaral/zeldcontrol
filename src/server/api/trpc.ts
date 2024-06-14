@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /**
  * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
  * 1. You want to modify request context (see Part 1).
@@ -11,6 +13,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+import { enhance } from "@zenstackhq/runtime";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
 
@@ -30,7 +33,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await getServerAuthSession();
 
   return {
-    db,
+    prisma: enhance(db, { user: session?.user }),
     session,
     ...opts,
   };

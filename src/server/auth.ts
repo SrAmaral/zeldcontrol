@@ -7,6 +7,7 @@ import {
 import { type Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
 
+import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "~/env";
 import { db } from "~/server/db";
 
@@ -47,10 +48,13 @@ export const authOptions: NextAuthOptions = {
     }),
   },
   adapter: PrismaAdapter(db) as Adapter,
+  pages: {
+    signIn: "/login",
+  },
   providers: [
     GoogleProvider({
-      clientId: env.GOOGLE_ID,
-      clientSecret: env.GOOGLE_SECRET,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
       authorization: {
         params: {
           prompt: "consent",
@@ -58,8 +62,31 @@ export const authOptions: NextAuthOptions = {
           response_type: "code"
         }
       }
-    })
+    }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if(!credentials) {
+          return null
+        }
+        
+        if(credentials.email === "admin@admin.com" && credentials.password === "admin") {
+          console.log('PASOUUUUUU')
+          return {
+            id: "1",
+            name: "admin",
+            email: "admin@admin.com"
+          }
+        }
+        // return null
+      }
+    }),
   ],
+  
 };
 
 /**

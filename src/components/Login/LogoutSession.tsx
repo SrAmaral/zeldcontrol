@@ -1,13 +1,14 @@
 "use client";
-import { signIn } from "next-auth/react";
+
+import { signOut } from "next-auth/react";
 import { Button } from "primereact/button";
 
 export default function ButtonGoogleLogin() {
   return (
     <Button
-      label="Login with Google"
+      label="Sair do sistema"
       icon="pi pi-google"
-      onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+      onClick={() => signOut()}
     />
   );
 }

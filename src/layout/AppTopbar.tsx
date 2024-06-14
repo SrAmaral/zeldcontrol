@@ -1,7 +1,9 @@
+"use client";
 import Image from "next/image";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { forwardRef, useContext, useImperativeHandle, useRef } from "react";
+import { useSession } from "~/context/Session/useSession";
 import type { AppTopbarRef } from "~/types";
 import AppBreadcrumb from "./AppBreadCrumb";
 import { LayoutContext } from "./context/layoutcontext";
@@ -10,6 +12,8 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
   const { onMenuToggle, showProfileSidebar, showConfigSidebar } =
     useContext(LayoutContext);
   const menubuttonRef = useRef(null);
+
+  const session = useSession((state) => state.session);
 
   const onConfigButtonClick = () => {
     showConfigSidebar();
@@ -64,10 +68,11 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
               onClick={showProfileSidebar}
             >
               <Image
-                src="/layout/images/avatar/avatar.png"
+                src={session?.user?.image!}
                 alt="Profile"
-                width={32}
-                height={32}
+                width={40}
+                height={40}
+                className="border-circle"
               />
             </button>
           </li>
