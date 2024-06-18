@@ -40,6 +40,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
 
   const [trpcClient] = useState(() =>
     api.createClient({
+      transformer: SuperJSON, // Add the transformer property
       links: [
         loggerLink({
           enabled: (op) =>
@@ -47,12 +48,11 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
             (op.direction === "down" && op.result instanceof Error),
         }),
         unstable_httpBatchStreamLink({
-          transformer: SuperJSON,
           url: getBaseUrl() + "/api/trpc",
           headers: () => {
             const headers = new Headers();
             headers.set("x-trpc-source", "nextjs-react");
-            return headers;
+            return Object.fromEntries(headers.entries());
           },
         }),
       ],

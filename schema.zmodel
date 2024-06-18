@@ -1,7 +1,7 @@
 plugin trpc {
     provider = '@zenstackhq/trpc'
     output = 'src/server/routers/generated'
-    generateModels = ["Cliente","OrdemServico","Produto","Orcamento","SystemUser"]
+    generateModels = ["Client", "SystemUser"]
 }
 
 generator client {
@@ -14,108 +14,122 @@ datasource db {
 }
 
 model SystemUser {
-    id            String      @id @default(cuid())
+    id            String    @id @default(cuid())
     name          String?
-    email         String?     @unique
+    email         String?   @unique
     password      String?
-    teste         String?
     emailVerified DateTime?
     image         String?
     role          String[]
-    orcamento     Orcamento[]
     @@auth
     @@allow('all',has(auth().role,'admin'))
 }
 
-model Cliente {
-    id              Int            @id @default(autoincrement())
-    nome            String
-    documento       String
-    observacao      String?
-    telefone        String?
-    email           String?
-    createdAt       DateTime?      @default(now())
-    updatedAt       DateTime?      @updatedAt
-    deletedAt       DateTime?
-    grupos          GrupoCliente[] @relation("ClienteGrupoCliente")
-    ordensDeServico OrdemServico[]
-    orcamentos      Orcamento[]
+model Client {
+    id              Int       @id @default(autoincrement())
+    fantasyName     String?
+    companyName     String
+    cnpj            String
+    cnaeDescription String?
+    cnaeCode        String?
+    openingDate     String?
+    address         String?
+    contactNumber   String?
+    contactEmail    String?
+    createdAt       DateTime? @default(now())
+    updatedAt       DateTime? @updatedAt
+    contacts        Json?
 }
 
-model OrdemServico {
-    id           Int                @id @default(autoincrement())
-    clienteId    Int
-    orcamentoId  Int?
-    descricao    String
-    dataInicio   DateTime?
-    dataFim      DateTime?
-    dataPrevista DateTime?
-    valorTotal   Float?
-    mes          String?            @db.Char(2)
-    ano          String?            @db.Char(4)
-    mesAno       String?            @db.Char(8)
-    insertedAt   DateTime?          @default(now())
-    updatedAt    DateTime?          @updatedAt
-    deletedAt    DateTime?
+// model Cliente {
+//     id              Int            @id @default(autoincrement())
+//     nome            String
+//     documento       String
+//     observacao      String?
+//     telefone        String?
+//     email           String?
+//     createdAt       DateTime?      @default(now())
+//     updatedAt       DateTime?      @updatedAt
+//     deletedAt       DateTime?
+//     grupos          GrupoCliente[] @relation("ClienteGrupoCliente")
+//     ordensDeServico OrdemServico[]
+//     orcamentos      Orcamento[]
+// }
 
-    cliente      Cliente            @relation(fields: [clienteId], references: [id])
-    orcamento    Orcamento?         @relation(fields: [orcamentoId], references: [id])
-    itens        OrdemServicoItem[]
-}
+// model OrdemServico {
+//     id           Int                @id @default(autoincrement())
+//     clienteId    Int
+//     orcamentoId  Int?
+//     descricao    String
+//     dataInicio   DateTime?
+//     dataFim      DateTime?
+//     dataPrevista DateTime?
+//     valorTotal   Float?
+//     mes          String?            @db.Char(2)
+//     ano          String?            @db.Char(4)
+//     mesAno       String?            @db.Char(8)
+//     insertedAt   DateTime?          @default(now())
+//     updatedAt    DateTime?          @updatedAt
+//     deletedAt    DateTime?
 
-model OrdemServicoItem {
-    id             Int          @id @default(autoincrement())
-    ordemServicoId Int
-    produtoId      Int
-    quantidade     Float?
-    desconto       Float?
-    valor          Float?
-    valorTotal     Float?
+//     cliente      Cliente            @relation(fields: [clienteId], references: [id])
+//     orcamento    Orcamento?         @relation(fields: [orcamentoId], references: [id])
+//     itens        OrdemServicoItem[]
+// }
 
-    ordemServico   OrdemServico @relation(fields: [ordemServicoId], references: [id])
-    produto        Produto      @relation(fields: [produtoId], references: [id])
-}
+// model OrdemServicoItem {
+//     id             Int          @id @default(autoincrement())
+//     ordemServicoId Int
+//     produtoId      Int
+//     quantidade     Float?
+//     desconto       Float?
+//     valor          Float?
+//     valorTotal     Float?
 
-model Produto {
-    id            Int                @id @default(autoincrement())
-    tipoProdutoId Int
-    nome          String
-    preco         Float
-    obs           String?
-    foto          String?
-    insertedAt    DateTime?          @default(now())
-    deletedAt     DateTime?
-    updatedAt     DateTime?          @updatedAt
+//     ordemServico   OrdemServico @relation(fields: [ordemServicoId], references: [id])
+//     produto        Produto      @relation(fields: [produtoId], references: [id])
+// }
 
-    tipoProduto   TipoProduto        @relation(fields: [tipoProdutoId], references: [id])
-    itens         OrdemServicoItem[]
-}
+// model Produto {
+//     id            Int                @id @default(autoincrement())
+//     tipoProdutoId Int
+//     nome          String
+//     preco         Float
+//     obs           String?
+//     foto          String?
+//     insertedAt    DateTime?          @default(now())
+//     deletedAt     DateTime?
+//     updatedAt     DateTime?          @updatedAt
 
-model TipoProduto {
-    id       Int       @id @default(autoincrement())
-    nome     String
+//     tipoProduto   TipoProduto        @relation(fields: [tipoProdutoId], references: [id])
+//     itens         OrdemServicoItem[]
+// }
 
-    produtos Produto[]
-}
+// model TipoProduto {
+//     id       Int       @id @default(autoincrement())
+//     nome     String
 
-model Orcamento {
-    id           Int            @id @default(autoincrement())
-    clienteId    Int
-    systemUserId String
-    descricao    String
-    valorTotal   Float?
-    createdAt    DateTime       @default(now())
-    updatedAt    DateTime       @updatedAt
-    deletedAt    DateTime?
+//     produtos Produto[]
+// }
 
-    cliente      Cliente        @relation(fields: [clienteId], references: [id])
-    systemUser   SystemUser     @relation(fields: [systemUserId], references: [id])
+// model Orcamento {
+//     id           Int            @id @default(autoincrement())
+//     clienteId    Int
+//     systemUserId String
+//     descricao    String
+//     valorTotal   Float?
+//     createdAt    DateTime       @default(now())
+//     updatedAt    DateTime       @updatedAt
+//     deletedAt    DateTime?
 
-    ordemServico OrdemServico[]
-}
+//     cliente      Cliente        @relation(fields: [clienteId], references: [id])
+//     systemUser   SystemUser     @relation(fields: [systemUserId], references: [id])
 
-model GrupoCliente {
-    id       Int       @id @default(autoincrement())
-    nome     String
-    clientes Cliente[] @relation("ClienteGrupoCliente")
-}
+//     ordemServico OrdemServico[]
+// }
+
+// model GrupoCliente {
+//     id       Int       @id @default(autoincrement())
+//     nome     String
+//     clientes Cliente[] @relation("ClienteGrupoCliente")
+// }

@@ -31,7 +31,7 @@ export default function LoginForm() {
       await signIn("credentials", {
         email: data.email,
         password: data.password,
-        callbackUrl: "/",
+        callbackUrl: "/dashboard",
       });
     }
   }
@@ -75,13 +75,6 @@ export default function LoginForm() {
           </a>
         </div>
         <Button label="Log In" type="submit" className="w-full" />
-        <Button
-          label="Login with Google"
-          icon="pi pi-google"
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-          severity="danger"
-          className="mt-7"
-        />
       </form>
     </div>
   );

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { postRouter } from "~/server/api/routers/post";
-import { createCallerFactory, createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { createCallerFactory, createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { createRouter } from "../routers/generated/routers";
 
 /**

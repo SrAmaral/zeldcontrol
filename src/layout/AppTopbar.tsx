@@ -68,7 +68,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
               onClick={showProfileSidebar}
             >
               <Image
-                src={session?.user?.image ?? "default-image.jpg"}
+                src={session?.user?.image ?? ""}
                 alt="Profile"
                 width={40}
                 height={40}

@@ -2,10 +2,7 @@
 import type { unsetMarker, AnyRouter, AnyRootConfig, CreateRouterInner, Procedure, ProcedureBuilder, ProcedureParams, ProcedureRouterRecord, ProcedureType } from "@trpc/server";
 import type { PrismaClient } from "@prisma/client";
 import createSystemUserRouter from "./SystemUser.router";
-import createClienteRouter from "./Cliente.router";
-import createOrdemServicoRouter from "./OrdemServico.router";
-import createProdutoRouter from "./Produto.router";
-import createOrcamentoRouter from "./Orcamento.router";
+import createClientRouter from "./Client.router";
 
 export type BaseConfig = AnyRootConfig;
 
@@ -31,10 +28,7 @@ export function db(ctx: any) {
 export function createRouter<Config extends BaseConfig>(router: RouterFactory<Config>, procedure: ProcBuilder<Config>) {
     return router({
         systemUser: createSystemUserRouter(router, procedure),
-        cliente: createClienteRouter(router, procedure),
-        ordemServico: createOrdemServicoRouter(router, procedure),
-        produto: createProdutoRouter(router, procedure),
-        orcamento: createOrcamentoRouter(router, procedure),
+        client: createClientRouter(router, procedure),
     }
     );
 }
