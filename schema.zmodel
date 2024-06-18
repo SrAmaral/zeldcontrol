@@ -1,6 +1,7 @@
 plugin trpc {
     provider = '@zenstackhq/trpc'
     output = 'src/server/routers/generated'
+    generateModels = ["Cliente","OrdemServico","Produto","Orcamento","SystemUser"]
 }
 
 generator client {
@@ -12,60 +13,109 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id          Int      @id @default(autoincrement())
-    name        String
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-
-    createdBy   User     @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
-}
-
-model Account {
-    id                       String  @id @default(cuid())
-    userId                   String
-    type                     String
-    provider                 String
-    providerAccountId        String
-    refresh_token            String? // @db.Text
-    access_token             String? // @db.Text
-    expires_at               Int?
-    token_type               String?
-    scope                    String?
-    id_token                 String? // @db.Text
-    session_state            String?
-    user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    refresh_token_expires_in Int?
-
-    @@unique([provider, providerAccountId])
-}
-
-model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model User {
-    id            String    @id @default(cuid())
+model SystemUser {
+    id            String      @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?     @unique
+    password      String?
+    teste         String?
     emailVerified DateTime?
     image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
+    role          String[]
+    orcamento     Orcamento[]
+    @@auth
+    @@allow('all',has(auth().role,'admin'))
 }
 
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+model Cliente {
+    id              Int            @id @default(autoincrement())
+    nome            String
+    documento       String
+    observacao      String?
+    telefone        String?
+    email           String?
+    createdAt       DateTime?      @default(now())
+    updatedAt       DateTime?      @updatedAt
+    deletedAt       DateTime?
+    grupos          GrupoCliente[] @relation("ClienteGrupoCliente")
+    ordensDeServico OrdemServico[]
+    orcamentos      Orcamento[]
+}
 
-    @@unique([identifier, token])
+model OrdemServico {
+    id           Int                @id @default(autoincrement())
+    clienteId    Int
+    orcamentoId  Int?
+    descricao    String
+    dataInicio   DateTime?
+    dataFim      DateTime?
+    dataPrevista DateTime?
+    valorTotal   Float?
+    mes          String?            @db.Char(2)
+    ano          String?            @db.Char(4)
+    mesAno       String?            @db.Char(8)
+    insertedAt   DateTime?          @default(now())
+    updatedAt    DateTime?          @updatedAt
+    deletedAt    DateTime?
+
+    cliente      Cliente            @relation(fields: [clienteId], references: [id])
+    orcamento    Orcamento?         @relation(fields: [orcamentoId], references: [id])
+    itens        OrdemServicoItem[]
+}
+
+model OrdemServicoItem {
+    id             Int          @id @default(autoincrement())
+    ordemServicoId Int
+    produtoId      Int
+    quantidade     Float?
+    desconto       Float?
+    valor          Float?
+    valorTotal     Float?
+
+    ordemServico   OrdemServico @relation(fields: [ordemServicoId], references: [id])
+    produto        Produto      @relation(fields: [produtoId], references: [id])
+}
+
+model Produto {
+    id            Int                @id @default(autoincrement())
+    tipoProdutoId Int
+    nome          String
+    preco         Float
+    obs           String?
+    foto          String?
+    insertedAt    DateTime?          @default(now())
+    deletedAt     DateTime?
+    updatedAt     DateTime?          @updatedAt
+
+    tipoProduto   TipoProduto        @relation(fields: [tipoProdutoId], references: [id])
+    itens         OrdemServicoItem[]
+}
+
+model TipoProduto {
+    id       Int       @id @default(autoincrement())
+    nome     String
+
+    produtos Produto[]
+}
+
+model Orcamento {
+    id           Int            @id @default(autoincrement())
+    clienteId    Int
+    systemUserId String
+    descricao    String
+    valorTotal   Float?
+    createdAt    DateTime       @default(now())
+    updatedAt    DateTime       @updatedAt
+    deletedAt    DateTime?
+
+    cliente      Cliente        @relation(fields: [clienteId], references: [id])
+    systemUser   SystemUser     @relation(fields: [systemUserId], references: [id])
+
+    ordemServico OrdemServico[]
+}
+
+model GrupoCliente {
+    id       Int       @id @default(autoincrement())
+    nome     String
+    clientes Cliente[] @relation("ClienteGrupoCliente")
 }
