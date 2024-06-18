@@ -12,6 +12,8 @@ COPY . .
 # Install dependencies
 RUN npm install
 
+RUN npx zenstack generate
+
 # Build the app
 RUN npm run build
 
