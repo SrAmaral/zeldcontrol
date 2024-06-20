@@ -2,8 +2,6 @@ import Link from "next/link";
 import { Button } from "primereact/button";
 
 export default async function ClientPage() {
-  console.log("data: ", usersData);
-
   return (
     <div className="col-12 card grid h-full p-0">
       <div className="card w-full">

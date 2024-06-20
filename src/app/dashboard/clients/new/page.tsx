@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "primereact/button";
-import NewClientForm from "~/components/Clients/new/NewClientForm.";
+import NewClientForm from "~/components/Clients/new/NewClientForm";
 
 export default async function NewClientPage() {
   return (

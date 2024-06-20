@@ -4,13 +4,17 @@ import { Button } from "primereact/button";
 import { InputMask } from "primereact/inputmask";
 import { InputText } from "primereact/inputtext";
 import { TabPanel, TabView } from "primereact/tabview";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { api } from "~/trpc/server";
-import { type CNPJRequestType } from "./CNPJRequestType";
-import { NewClientFormSchema, type NewClientFormSchemaType } from "./ZodSchema";
+import { CreateClientRequest } from "./CreateClientRequest";
+import {
+  NewClientFormSchema,
+  type CNPJRequestType,
+  type NewClientFormSchemaType,
+} from "./NewClientsTypes";
 
 export default function NewClientForm() {
+  const [findingCNPJ, setFindingCNPJ] = useState("");
   const {
     register,
     handleSubmit,
@@ -48,6 +52,7 @@ export default function NewClientForm() {
 
   useEffect(() => {
     if (cnpjWatch.replace(/\D/g, "").length === 14) {
+      setFindingCNPJ("Buscando CNPJ...");
       fetch(
         `https://api-publica.speedio.com.br/buscarcnpj?cnpj=${cnpjWatch.replace(/\D/g, "")}`,
       )
@@ -57,30 +62,40 @@ export default function NewClientForm() {
           }
         })
         .then((data: CNPJRequestType) => {
-          setValue("fantasyName", data["NOME FANTASIA"]);
-          setValue("companyName", data["RAZAO SOCIAL"]);
-          setValue("cnaeCode", data["CNAE PRINCIPAL CODIGO"]);
-          setValue("cnaeDescription", data["CNAE PRINCIPAL DESCRICAO"]);
-          setValue("openingDate", data["DATA ABERTURA"]);
-          setValue("address.streetType", data["TIPO LOGRADOURO"]);
-          setValue("address.street", data.LOGRADOURO);
-          setValue("address.number", data.NUMERO);
-          setValue("address.complement", data.COMPLEMENTO);
-          setValue("address.neighborhood", data.BAIRRO);
-          setValue("address.city", data.MUNICIPIO);
-          setValue("address.state", data.UF);
-          setValue("address.zipCode", data.CEP);
-          setValue(
-            "contactNumber",
-            `(${data.DDD}) ${data.TELEFONE.slice(0, 4)}-${data.TELEFONE.slice(4)}`,
-          );
-          setValue("contactEmail", data.EMAIL);
+          if (Object.keys(data).length !== 1) {
+            console.log(data);
+            setFindingCNPJ("CNPJ encontrado!");
+            setValue("fantasyName", data["NOME FANTASIA"]);
+            setValue("companyName", data["RAZAO SOCIAL"]);
+            setValue("cnaeCode", data["CNAE PRINCIPAL CODIGO"]);
+            setValue("cnaeDescription", data["CNAE PRINCIPAL DESCRICAO"]);
+            setValue("openingDate", data["DATA ABERTURA"]);
+            setValue("address.streetType", data["TIPO LOGRADOURO"]);
+            setValue("address.street", data.LOGRADOURO);
+            setValue("address.number", data.NUMERO);
+            setValue("address.complement", data.COMPLEMENTO);
+            setValue("address.neighborhood", data.BAIRRO);
+            setValue("address.city", data.MUNICIPIO);
+            setValue("address.state", data.UF);
+            setValue("address.zipCode", data.CEP);
+            setValue(
+              "contactNumber",
+              `(${data.DDD}) ${data.TELEFONE.slice(0, 4)}-${data.TELEFONE.slice(4)}`,
+            );
+            setValue("contactEmail", data.EMAIL);
+          } else {
+            setFindingCNPJ("CNPJ não encontrado na base do governo!");
+          }
         })
         .catch((error) => {
           console.log(error);
         });
+    } else {
+      setFindingCNPJ("");
     }
   }, [cnpjWatch]);
+
+  console.log(findingCNPJ);
 
   const addContact = () => {
     const currentContacts = getValues("contacts");
@@ -89,12 +104,7 @@ export default function NewClientForm() {
   };
 
   async function handleCreateClient(data: NewClientFormSchemaType) {
-    try {
-      const response = await api.zen.client.create({ data: { ...data } });
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+    await CreateClientRequest(data);
   }
 
   return (
@@ -115,9 +125,15 @@ export default function NewClientForm() {
               />
               <label htmlFor="cnpj">CNPJ</label>
             </span>
-            <p className="p-error mt-2">{errors.cnpj?.message}</p>
+            <p className="p-error">{errors.cnpj?.message}</p>
           </div>
-          <div className="field col-6"></div>
+          <div className="field col-6">
+            <p
+              className={`mt-3 font-bold ${findingCNPJ == "CNPJ encontrado!" ? "text-green-600" : findingCNPJ == "Buscando CNPJ..." ? "" : "text-red-400"}`}
+            >
+              {findingCNPJ}
+            </p>
+          </div>
           <div className="field col-6">
             <span className="p-float-label">
               <InputText
