@@ -11,6 +11,15 @@ export async function CreateClientRequest(data: NewClientFormSchemaType) {
   }
 }
 
+export async function UpdateClientRequest(id: number, data: NewClientFormSchemaType) { 
+  try {
+    const response = await db.client.update({where: {id}, data: {...data}});
+    return response
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function GetClientRequest(id: number) {
   try {
     const response = await db.client.findUnique({where: {id}});

@@ -1,14 +1,18 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { Button } from "primereact/button";
 import { InputMask } from "primereact/inputmask";
 import { InputText } from "primereact/inputtext";
 import { TabPanel, TabView } from "primereact/tabview";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CreateClientRequest, GetClientRequest } from "./ClientRequest";
+import {
+  CreateClientRequest,
+  GetClientRequest,
+  UpdateClientRequest,
+} from "./ClientRequest";
 import {
   NewClientFormSchema,
   type CNPJRequestType,
@@ -51,16 +55,16 @@ export default function NewClientForm() {
 
   const { clientId } = useParams();
   const [isClient, setIsCLient] = useState(false);
-
   const formValues = watch();
   const cnpjWatch = watch("cnpj");
+  const pathName = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     if (!!clientId) {
       GetClientRequest(Number(clientId))
         .then((client) => {
-          setIsCLient(true);
-
+          !!client && setIsCLient(true);
           !!client &&
             Object.entries(client).forEach(([key, value]) => {
               const keyName = key as keyof NewClientFormSchemaType;
@@ -125,15 +129,28 @@ export default function NewClientForm() {
     setValue("contacts", currentContacts);
   };
 
+  const removeContact = (id: number) => {
+    const currentContacts = getValues("contacts");
+    currentContacts?.splice(id, 1);
+    setValue("contacts", currentContacts);
+  };
+
   async function handleCreateClient(data: NewClientFormSchemaType) {
-    await CreateClientRequest(data);
+    if (!!clientId) {
+      await UpdateClientRequest(Number(clientId), data);
+      setTimeout(() => router.push("/dashboard/clients"), 2000);
+    } else {
+      await CreateClientRequest(data);
+      setTimeout(() => router.push("/dashboard/clients"), 2000);
+    }
   }
 
-  console.log(isClient);
+  const showForm =
+    pathName === "/dashboard/clients/new" ? true : isClient ? true : false;
 
   return (
     <>
-      {!!isClient ? (
+      {showForm ? (
         <form onSubmit={handleSubmit(handleCreateClient)}>
           <TabView>
             <TabPanel
@@ -336,7 +353,7 @@ export default function NewClientForm() {
                       <label htmlFor={`contacts[${index}].name`}>Nome</label>
                     </span>
                   </div>
-                  <div className="field col-4">
+                  <div className="field col-3">
                     <span className="p-float-label">
                       <InputText
                         id={`contacts[${index}].email`}
@@ -346,7 +363,7 @@ export default function NewClientForm() {
                       <label htmlFor={`contacts[${index}].email`}>Email</label>
                     </span>
                   </div>
-                  <div className="field col-4">
+                  <div className="field col-3">
                     <span className="p-float-label">
                       <InputMask
                         id={`contacts[${index}].phone`}
@@ -356,6 +373,18 @@ export default function NewClientForm() {
                       />
                       <label htmlFor={`contacts[${index}].phone`}>Numero</label>
                     </span>
+                  </div>
+                  <div className="col-2">
+                    <Button
+                      className="ml-4"
+                      type="button"
+                      icon="pi pi-trash"
+                      severity="danger"
+                      onClick={() => {
+                        removeContact(index);
+                      }}
+                      rounded
+                    />
                   </div>
                 </div>
               ))}
@@ -369,7 +398,11 @@ export default function NewClientForm() {
             </TabPanel>
           </TabView>
           <div className="justify-content-end flex">
-            <Button label="Criar Cliente" type="submit" className="mt-4 w-4" />
+            <Button
+              label={!!clientId ? "Atualizar Cadastro" : "Criar Cliente"}
+              type="submit"
+              className="mt-4 w-4"
+            />
           </div>
         </form>
       ) : (
