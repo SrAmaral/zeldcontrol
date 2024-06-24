@@ -60,23 +60,27 @@ export default function NewClientForm() {
   const pathName = usePathname();
   const router = useRouter();
 
-  useEffect(() => {
+  const fetchClient = async () => {
     if (!!clientId) {
-      GetClientRequest(Number(clientId))
-        .then((client) => {
-          !!client && setIsCLient(true);
-          !!client &&
-            Object.entries(client).forEach(([key, value]) => {
-              const keyName = key as keyof NewClientFormSchemaType;
-              const valueName = value as string;
-              setValue(keyName, valueName);
-            });
-        })
-        .catch((error) => {
-          setIsCLient(false);
-          console.log(error);
-        });
+      try {
+        const client = await GetClientRequest(Number(clientId));
+        if (client) {
+          setIsCLient(true);
+          Object.entries(client).forEach(([key, value]) => {
+            const keyName = key as keyof NewClientFormSchemaType;
+            const valueName = value as string;
+            setValue(keyName, valueName);
+          });
+        }
+      } catch (error) {
+        setIsCLient(false);
+        console.log(error);
+      }
     }
+  };
+
+  useEffect(() => {
+    void fetchClient();
   }, []);
 
   useEffect(() => {
