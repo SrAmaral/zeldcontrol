@@ -1,8 +1,8 @@
 /* eslint-disable */
+import type { unsetMarker, AnyRouter, AnyRootConfig, CreateRouterInner, Procedure, ProcedureBuilder, ProcedureParams, ProcedureRouterRecord, ProcedureType } from "@trpc/server";
 import type { PrismaClient } from "@prisma/client";
-import type { AnyRootConfig, CreateRouterInner, ProcedureBuilder, ProcedureParams, ProcedureRouterRecord, unsetMarker } from "@trpc/server";
-import createClientRouter from "./Client.router";
 import createSystemUserRouter from "./SystemUser.router";
+import createClientRouter from "./Client.router";
 
 export type BaseConfig = AnyRootConfig;
 

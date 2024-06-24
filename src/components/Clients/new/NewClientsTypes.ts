@@ -43,6 +43,35 @@ export const NewClientFormSchema = z.object({
     .optional(),
 });
 
+export type ClientDataType = {
+  id: number; 
+  fantasyName: string;
+  companyName: string;
+  cnpj: string;
+  cnaeDescription: string,
+  cnaeCode: string;
+  openingDate: string;
+  address: {
+    streetType: string;
+    street: string;
+    number: string;
+    complement: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    zipCode: string;
+  }
+  contactNumber: string;
+  contactEmail: string;
+  contacts: {
+    name: string;
+    email: string;
+    phone: string;
+  }[]
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type CNPJRequestType = {
   BAIRRO: string;
   CEP: string;
