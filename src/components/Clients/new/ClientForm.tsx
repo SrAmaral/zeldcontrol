@@ -5,6 +5,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { Button } from "primereact/button";
 import { InputMask } from "primereact/inputmask";
 import { InputText } from "primereact/inputtext";
+import { Skeleton } from "primereact/skeleton";
 import { TabPanel, TabView } from "primereact/tabview";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -55,25 +56,30 @@ export default function NewClientForm() {
 
   const { clientId } = useParams();
   const [isClient, setIsCLient] = useState(false);
+  const pathName = usePathname();
+  const [loading, setLoading] = useState(pathName !== "/dashboard/clients/new");
   const formValues = watch();
   const cnpjWatch = watch("cnpj");
-  const pathName = usePathname();
+
   const router = useRouter();
 
   const fetchClient = async () => {
     if (!!clientId) {
       try {
         const client = await GetClientRequest(Number(clientId));
-        if (client) {
+        if (!!client) {
           setIsCLient(true);
+          setLoading(false);
           Object.entries(client).forEach(([key, value]) => {
             const keyName = key as keyof NewClientFormSchemaType;
             const valueName = value as string;
             setValue(keyName, valueName);
           });
+        } else {
+          setIsCLient(false);
+          setLoading(false);
         }
       } catch (error) {
-        setIsCLient(false);
         console.log(error);
       }
     }
@@ -154,7 +160,17 @@ export default function NewClientForm() {
 
   return (
     <>
-      {showForm ? (
+      {loading && (
+        <div className="col 12 grid gap-5">
+          <Skeleton className="w-full" height="2.5rem" />
+          <Skeleton className="w-full" height="2.5rem" />
+          <Skeleton className="w-full" height="2.5rem" />
+          <Skeleton className="w-full" height="2.5rem" />
+          <Skeleton className="w-full" height="2.5rem" />
+          <Skeleton className="w-full" height="2.5rem" />
+        </div>
+      )}
+      {showForm && (
         <form onSubmit={handleSubmit(handleCreateClient)}>
           <TabView>
             <TabPanel
@@ -345,9 +361,9 @@ export default function NewClientForm() {
               {formValues.contacts?.map((contact, index) => (
                 <div
                   key={index}
-                  className="p-fluid row-gap-6 formgrid mt-6 grid"
+                  className="p-fluid row-gap-6 column-gap-3 formgrid mt-6 grid"
                 >
-                  <div className="field col-4">
+                  <div className="field flex-1">
                     <span className="p-float-label">
                       <InputText
                         id={`contacts[${index}].name`}
@@ -357,7 +373,7 @@ export default function NewClientForm() {
                       <label htmlFor={`contacts[${index}].name`}>Nome</label>
                     </span>
                   </div>
-                  <div className="field col-3">
+                  <div className="field flex-1">
                     <span className="p-float-label">
                       <InputText
                         id={`contacts[${index}].email`}
@@ -367,7 +383,7 @@ export default function NewClientForm() {
                       <label htmlFor={`contacts[${index}].email`}>Email</label>
                     </span>
                   </div>
-                  <div className="field col-3">
+                  <div className="field flex-1">
                     <span className="p-float-label">
                       <InputMask
                         id={`contacts[${index}].phone`}
@@ -378,18 +394,16 @@ export default function NewClientForm() {
                       <label htmlFor={`contacts[${index}].phone`}>Numero</label>
                     </span>
                   </div>
-                  <div className="col-2">
-                    <Button
-                      className="ml-4"
-                      type="button"
-                      icon="pi pi-trash"
-                      severity="danger"
-                      onClick={() => {
-                        removeContact(index);
-                      }}
-                      rounded
-                    />
-                  </div>
+                  <Button
+                    className="ml-2"
+                    type="button"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    onClick={() => {
+                      removeContact(index);
+                    }}
+                    rounded
+                  />
                 </div>
               ))}
               <Button
@@ -409,7 +423,8 @@ export default function NewClientForm() {
             />
           </div>
         </form>
-      ) : (
+      )}
+      {!showForm && !loading && (
         <div className="justify-content-center align-items-center mb-8 flex h-fit">
           <div className="z-1 text-center">
             <div className="text-900 mb-4 text-8xl font-bold">Oops!</div>
