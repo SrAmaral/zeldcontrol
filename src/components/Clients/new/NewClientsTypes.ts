@@ -44,13 +44,13 @@ export const NewClientFormSchema = z.object({
 });
 
 export type ClientDataType = {
-  id: number; 
-  fantasyName: string;
+  id: number;
+  fantasyName: string | null;
   companyName: string;
   cnpj: string;
-  cnaeDescription: string,
-  cnaeCode: string;
-  openingDate: string;
+  cnaeDescription: string | null;
+  cnaeCode: string | null;
+  openingDate: string | null;
   address: {
     streetType: string;
     street: string;
@@ -60,16 +60,17 @@ export type ClientDataType = {
     city: string;
     state: string;
     zipCode: string;
-  }
-  contactNumber: string;
-  contactEmail: string;
+  } | null;
+  contactNumber: string | null;
+  contactEmail: string | null;
   contacts: {
     name: string;
     email: string;
     phone: string;
-  }[]
+  }[] | null;
   createdAt: string;
   updatedAt: string;
+  // Add or update other properties as needed
 }
 
 export type CNPJRequestType = {

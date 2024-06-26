@@ -139,7 +139,7 @@ const AppConfig = (props: AppConfigProps) => {
         position="right"
         className="layout-config-sidebar w-18rem"
       >
-        <h5>Themes</h5>
+        {/* <h5>Themes</h5>
         <div className="row-gap-3 flex flex-wrap">
           {componentThemes.map((theme, i) => {
             return (
@@ -157,7 +157,7 @@ const AppConfig = (props: AppConfigProps) => {
               </div>
             );
           })}
-        </div>
+        </div> */}
 
         <h5>Scale</h5>
         <div className="align-items-center flex">
@@ -303,7 +303,7 @@ const AppConfig = (props: AppConfigProps) => {
           </>
         )}
 
-        <h5>Color Scheme</h5>
+        {/* <h5>Color Scheme</h5>
         <div className="field-radiobutton">
           <RadioButton
             name="colorScheme"
@@ -333,7 +333,7 @@ const AppConfig = (props: AppConfigProps) => {
             inputId="mode-dark"
           ></RadioButton>
           <label htmlFor="mode-dark">Dark</label>
-        </div>
+        </div> */}
 
         {!props.minimal && (
           <>

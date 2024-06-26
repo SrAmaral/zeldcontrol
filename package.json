@@ -51,7 +51,7 @@
     "prettier-plugin-tailwindcss": "^0.5.14",
     "primeflex": "^3.3.1",
     "primeicons": "^6.0.1",
-    "primereact": "10.2.1",
+    "primereact": "10.6.6",
     "prisma": "^5.14.0",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.2",

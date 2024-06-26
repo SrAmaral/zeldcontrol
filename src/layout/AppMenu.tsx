@@ -15,7 +15,23 @@ const AppMenu = () => {
         {
           label: "Clientes",
           icon: "pi pi-user",
-          to: "/dashboard/clients/new",
+          items: [
+            {
+              label: "Dashboard de Clientes",
+              icon: "pi pi-th-large",
+              to: "/dashboard/clients",
+            },
+            {
+              label: "Listagem de Clientes",
+              icon: "pi pi-fw pi-users",
+              to: "/dashboard/clients/list",
+            },
+            {
+              label: "Novo Cliente",
+              icon: "pi pi-fw pi-plus",
+              to: "/dashboard/clients/new",
+            },
+          ],
         },
       ],
     },

@@ -28,3 +28,21 @@ export async function GetClientRequest(id: number) {
     console.log(error);
   }
 }
+
+export async function DeleteClientById(id:number) {
+  try {
+    const response = await db.client.delete({where: {id}});
+    return response
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function GetAllClient() {
+  try {
+    const response = await db.client.findMany();
+    return response
+  } catch (error) {
+    console.log(error);
+  }
+}
