@@ -39,7 +39,7 @@ export default function ListClientComponent({
   }, [filter, clients]);
 
   const clearFilter = () => {
-    // initFilters();
+    setFilter("");
   };
 
   const renderHeader = () => {
