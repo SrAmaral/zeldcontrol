@@ -31,14 +31,14 @@ const NotFound: Page = () => {
         <div className="z-1 text-center">
           <div className="text-900 mb-4 text-8xl font-bold">Oops!</div>
           <p className="line-height-3 text-700 mb-5 mt-0 text-xl font-medium">
-            There is nothing here
+            Nenhuma pagina foi encontrada
           </p>
-          <Link href={"/"}>
+          <Link href={"/dashboard"}>
             <button
               type="button"
               className="p-button p-button-warning p-button-raised font-medium"
             >
-              Go to Dashboard
+              Ir para Dashboard
             </button>
           </Link>
         </div>

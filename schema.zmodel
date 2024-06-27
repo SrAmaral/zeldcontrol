@@ -33,7 +33,7 @@ model Client {
     cnaeDescription String?
     cnaeCode        String?
     openingDate     String?
-    address         String?
+    address         Json?
     contactNumber   String?
     contactEmail    String?
     createdAt       DateTime? @default(now())

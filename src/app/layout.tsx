@@ -5,8 +5,8 @@ import "primeicons/primeicons.css";
 import { PrimeReactProvider } from "primereact/api";
 import "primereact/resources/primereact.css";
 import "../../public/theme/theme-light/indigo/theme.css";
-import "../styles/demo/Demos.scss";
-import "../styles/layout/layout.scss";
+// import "../styles/Demo.css";
+import "../styles/Layout.css";
 
 interface RootLayoutProps {
   children: React.ReactNode;
