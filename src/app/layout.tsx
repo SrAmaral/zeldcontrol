@@ -1,4 +1,3 @@
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { LayoutProvider } from "../layout/context/layoutcontext";
 
 import "primeflex/primeflex.css";
@@ -17,11 +16,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <AppRouterCacheProvider>
-          <PrimeReactProvider>
-            <LayoutProvider>{children}</LayoutProvider>
-          </PrimeReactProvider>
-        </AppRouterCacheProvider>
+        <PrimeReactProvider>
+          <LayoutProvider>{children}</LayoutProvider>
+        </PrimeReactProvider>
       </body>
     </html>
   );
