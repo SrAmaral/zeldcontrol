@@ -90,7 +90,7 @@ export default function NewClientForm() {
   }, []);
 
   useEffect(() => {
-    if (cnpjWatch.replace(/\D/g, "").length === 14) {
+    if (cnpjWatch.replace(/\D/g, "").length === 14 && clientId === undefined) {
       setFindingCNPJ("Buscando CNPJ...");
       fetch(
         `https://api-publica.speedio.com.br/buscarcnpj?cnpj=${cnpjWatch.replace(/\D/g, "")}`,
