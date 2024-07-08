@@ -1,16 +1,13 @@
 import Link from "next/link";
 import { Button } from "primereact/button";
-import ListClientComponent from "~/components/Clients/list/ListClient";
-import { db } from "~/server/db";
+import NewEmployeeForm from "~/components/Employees/new/EmployeeForm";
 
-export default async function ListClientPage() {
-  const clients = await db.client.findMany();
-
+export default async function NewEmployeePage() {
   return (
     <div className="col-12 card grid h-full p-0">
       <div className="card w-full">
         <div className="justify-content-between flex">
-          <h1>Listagem de Clientes</h1>
+          <h1>Novo Funcionário</h1>
           <Link href="/dashboard/clients">
             <Button
               label="Voltar"
@@ -20,7 +17,9 @@ export default async function ListClientPage() {
             />
           </Link>
         </div>
-        <ListClientComponent clients={clients} />
+        <div className="mt-8">
+          <NewEmployeeForm />
+        </div>
       </div>
     </div>
   );

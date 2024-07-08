@@ -70,7 +70,7 @@ export default function LoginForm() {
               Remember Me
             </label>
           </div>
-          <a className="text-600 hover:text-primary transition-duration-300 ml-auto cursor-pointer cursor-pointer transition-colors">
+          <a className="text-600 hover:text-primary transition-duration-300 ml-auto cursor-pointer transition-colors">
             Reset password
           </a>
         </div>

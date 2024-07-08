@@ -33,6 +33,27 @@ const AppMenu = () => {
             },
           ],
         },
+        {
+          label: "Funcionário",
+          icon: "pi pi-user",
+          items: [
+            {
+              label: "Dashboard de Funcionário",
+              icon: "pi pi-th-large",
+              to: "/dashboard/employees",
+            },
+            {
+              label: "Listagem de Funcionários",
+              icon: "pi pi-fw pi-users",
+              to: "/dashboard/employees/list",
+            },
+            {
+              label: "Novo Funcionário",
+              icon: "pi pi-fw pi-plus",
+              to: "/dashboard/employees/new",
+            },
+          ],
+        },
       ],
     },
   ];
