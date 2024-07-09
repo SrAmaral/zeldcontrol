@@ -78,7 +78,7 @@ export type EmployeeDataType = {
   contactNumber: string | null;
   contactEmail: string | null;
   typeHiring: string;
-  hitingDate: string;
+  hiringDate: string;
   position: string;
   salary: string;
   workLoad: string;
@@ -86,4 +86,13 @@ export type EmployeeDataType = {
   files: File[];
   createdAt: string;
   updatedAt: string;
+}
+
+
+export type EmployeeFileType = {
+  id: number;
+  filename: string;
+  url: string;
+  type: string;
+  employeeEmail: string;
 }

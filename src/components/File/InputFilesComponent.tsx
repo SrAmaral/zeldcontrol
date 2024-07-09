@@ -146,7 +146,7 @@ export default function InputFilescomponent() {
           style={{ fontSize: "1.2em", color: "var(--text-color-secondary)" }}
           className="my-5"
         >
-          Drag and Drop Image Here
+          Arraste e Solte os Arquivos Aqui
         </span>
       </div>
     );

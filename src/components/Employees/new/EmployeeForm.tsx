@@ -1,15 +1,18 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { InputMask } from "primereact/inputmask";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
+import { Skeleton } from "primereact/skeleton";
 import { TabPanel, TabView } from "primereact/tabview";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import InputFilesComponent from "../../File/InputFilesComponent";
+import { CreateEmployeeRequest } from "./EmployeeRequests";
 import {
   NewEmployeeFormSchema,
   type NewEmployeeFormSchemaType,
@@ -51,20 +54,26 @@ export default function NewEmployeeForm() {
       salary: "0",
       workLoad: "",
       comment: "",
-      files: [],
+      files: [
+        {
+          filename: "",
+          url: "",
+          type: "",
+          employeeEmail: "",
+        },
+      ],
     },
   });
 
   const { employeeId } = useParams();
   const [isEmployee, setIsEmployee] = useState(false);
   const pathName = usePathname();
-  // const [loading, setLoading] = useState(
-  //   pathName !== "/dashboard/employees/new",
-  // );
+  const [loading, setLoading] = useState(
+    pathName !== "/dashboard/employees/new",
+  );
   const formValues = watch();
-  // const cnpjWatch = watch("cnpj");
 
-  // const router = useRouter();
+  const router = useRouter();
 
   // const fetchClient = async () => {
   //   if (!!clientId) {
@@ -92,59 +101,15 @@ export default function NewEmployeeForm() {
   //   void fetchClient();
   // }, []);
 
-  // useEffect(() => {
-  //   if (cnpjWatch.replace(/\D/g, "").length === 14 && clientId === undefined) {
-  //     setFindingCNPJ("Buscando CNPJ...");
-  //     fetch(
-  //       `https://api-publica.speedio.com.br/buscarcnpj?cnpj=${cnpjWatch.replace(/\D/g, "")}`,
-  //     )
-  //       .then((response) => {
-  //         if (response.ok) {
-  //           return response.json();
-  //         }
-  //       })
-  //       .then((data: CNPJRequestType) => {
-  //         if (Object.keys(data).length !== 1) {
-  //           setFindingCNPJ("CNPJ encontrado!");
-  //           setValue("fantasyName", data["NOME FANTASIA"]);
-  //           setValue("companyName", data["RAZAO SOCIAL"]);
-  //           setValue("cnaeCode", data["CNAE PRINCIPAL CODIGO"]);
-  //           setValue("cnaeDescription", data["CNAE PRINCIPAL DESCRICAO"]);
-  //           setValue("openingDate", data["DATA ABERTURA"]);
-  //           setValue("address.streetType", data["TIPO LOGRADOURO"]);
-  //           setValue("address.street", data.LOGRADOURO);
-  //           setValue("address.number", data.NUMERO);
-  //           setValue("address.complement", data.COMPLEMENTO);
-  //           setValue("address.neighborhood", data.BAIRRO);
-  //           setValue("address.city", data.MUNICIPIO);
-  //           setValue("address.state", data.UF);
-  //           setValue("address.zipCode", data.CEP);
-  //           setValue(
-  //             "contactNumber",
-  //             `(${data.DDD}) ${data.TELEFONE.slice(0, 4)}-${data.TELEFONE.slice(4)}`,
-  //           );
-  //           setValue("contactEmail", data.EMAIL);
-  //         } else {
-  //           setFindingCNPJ("CNPJ não encontrado na base do governo!");
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //   } else {
-  //     setFindingCNPJ("");
-  //   }
-  // }, [cnpjWatch]);
-
-  async function handleCreateClient(data: NewEmployeeFormSchemaType) {
+  async function handleCreateEmployee(data: NewEmployeeFormSchemaType) {
     console.log(data);
-    // if (!!clientId) {
-    //   await UpdateClientRequest(Number(clientId), data);s
-    //   setTimeout(() => router.push("/dashboard/clients"), 2000);
-    // } else {
-    //   await CreateClientRequest(data);
-    //   setTimeout(() => router.push("/dashboard/clients"), 2000);
-    // }
+    if (!!employeeId) {
+      // await UpdateClientRequest(Number(employeeId), data);
+      // setTimeout(() => router.push("/dashboard/employees"), 2000);
+    } else {
+      await CreateEmployeeRequest(data);
+      // setTimeout(() => router.push("/dashboard/employees"), 2000);
+    }
   }
 
   const showForm =
@@ -166,11 +131,9 @@ export default function NewEmployeeForm() {
     { label: "Outros", value: "Outros" },
   ];
 
-  console.log(formValues.salary);
-
   return (
     <>
-      {/* {loading && (
+      {loading && (
         <div className="col 12 grid gap-5">
           <Skeleton className="w-full" height="2.5rem" />
           <Skeleton className="w-full" height="2.5rem" />
@@ -179,9 +142,9 @@ export default function NewEmployeeForm() {
           <Skeleton className="w-full" height="2.5rem" />
           <Skeleton className="w-full" height="2.5rem" />
         </div>
-      )} */}
+      )}
       {showForm && (
-        <form onSubmit={handleSubmit(handleCreateClient)}>
+        <form onSubmit={handleSubmit(handleCreateEmployee)}>
           <TabView>
             <TabPanel
               header="Informações do Funcionário"
@@ -460,13 +423,13 @@ export default function NewEmployeeForm() {
               <InputFilesComponent />
             </TabPanel>
           </TabView>
-          {/* <div className="justify-content-end flex">
+          <div className="justify-content-end flex">
             <Button
-              label={!!clientId ? "Atualizar Cadastro" : "Criar Cliente"}
+              label={!!employeeId ? "Atualizar Cadastro" : "Criar Funcionário"}
               type="submit"
               className="mt-4 w-4"
             />
-          </div> */}
+          </div>
         </form>
       )}
       {/* {!showForm && !loading && (

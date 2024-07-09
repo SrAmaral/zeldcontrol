@@ -8,7 +8,7 @@ export default async function NewEmployeePage() {
       <div className="card w-full">
         <div className="justify-content-between flex">
           <h1>Novo Funcionário</h1>
-          <Link href="/dashboard/clients">
+          <Link href="/dashboard/employees">
             <Button
               label="Voltar"
               outlined
