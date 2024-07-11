@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
@@ -9,10 +10,14 @@ import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Skeleton } from "primereact/skeleton";
 import { TabPanel, TabView } from "primereact/tabview";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputFilesComponent from "../../File/InputFilesComponent";
-import { CreateEmployeeRequest } from "./EmployeeRequests";
+import {
+  CreateEmployeeRequest,
+  GetEmployeeRequest,
+  UpdateEmployeeRequest,
+} from "./EmployeeRequests";
 import {
   NewEmployeeFormSchema,
   type NewEmployeeFormSchemaType,
@@ -66,6 +71,7 @@ export default function NewEmployeeForm() {
   });
 
   const { employeeId } = useParams();
+
   const [isEmployee, setIsEmployee] = useState(false);
   const pathName = usePathname();
   const [loading, setLoading] = useState(
@@ -75,40 +81,40 @@ export default function NewEmployeeForm() {
 
   const router = useRouter();
 
-  // const fetchClient = async () => {
-  //   if (!!clientId) {
-  //     try {
-  //       const client = await GetClientRequest(Number(clientId));
-  //       if (!!client) {
-  //         setIsCLient(true);
-  //         setLoading(false);
-  //         Object.entries(client).forEach(([key, value]) => {
-  //           const keyName = key as keyof NewClientFormSchemaType;
-  //           const valueName = value as string;
-  //           setValue(keyName, valueName);
-  //         });
-  //       } else {
-  //         setIsCLient(false);
-  //         setLoading(false);
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // };
+  const fetchEmployee = async () => {
+    if (!!employeeId) {
+      try {
+        const employee = await GetEmployeeRequest(Number(employeeId));
+        if (!!employee) {
+          setIsEmployee(true);
+          setLoading(false);
+          Object.entries(employee).forEach(([key, value]) => {
+            const keyName = key as keyof NewEmployeeFormSchemaType;
+            const valueName = value as string;
+            setValue(keyName, valueName);
+          });
+        } else {
+          setIsEmployee(false);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
-  // useEffect(() => {
-  //   void fetchClient();
-  // }, []);
+  useEffect(() => {
+    void fetchEmployee();
+  }, []);
 
   async function handleCreateEmployee(data: NewEmployeeFormSchemaType) {
     console.log(data);
     if (!!employeeId) {
-      // await UpdateClientRequest(Number(employeeId), data);
-      // setTimeout(() => router.push("/dashboard/employees"), 2000);
+      await UpdateEmployeeRequest(Number(employeeId), data);
+      setTimeout(() => router.push("/dashboard/employees"), 2000);
     } else {
       await CreateEmployeeRequest(data);
-      // setTimeout(() => router.push("/dashboard/employees"), 2000);
+      setTimeout(() => router.push("/dashboard/employees"), 2000);
     }
   }
 
@@ -432,24 +438,24 @@ export default function NewEmployeeForm() {
           </div>
         </form>
       )}
-      {/* {!showForm && !loading && (
+      {!showForm && !loading && (
         <div className="justify-content-center align-items-center mb-8 flex h-fit">
           <div className="z-1 text-center">
             <div className="text-900 mb-4 text-8xl font-bold">Oops!</div>
             <p className="line-height-3 text-700 mb-5 mt-0 text-xl font-medium">
-              Este cliente não foi encontrado em nossa base de dados.
+              Este Funcionário não foi encontrado em nossa base de dados.
             </p>
-            <Link href={"/dashboard/clients"}>
+            <Link href={"/dashboard/employees"}>
               <button
                 type="button"
                 className="p-button p-button-warning p-button-raised font-medium"
               >
-                Voltar para clientes
+                Voltar para funcionarios
               </button>
             </Link>
           </div>
         </div>
-      )} */}
+      )}
     </>
   );
 }

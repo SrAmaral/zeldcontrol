@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { createCallerFactory, createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { createRouter } from "../routers/generated/routers";
+import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { clientRouter } from "./routers/clients/clients";
+
 
 /**
  * This is the primary router for your server.
@@ -8,7 +9,7 @@ import { createRouter } from "../routers/generated/routers";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  zen: createRouter(createTRPCRouter,protectedProcedure),
+  client: clientRouter
 });
 
 // export type definition of API

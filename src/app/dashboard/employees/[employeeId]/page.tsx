@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "primereact/button";
+import NewEmployeeForm from "~/components/Employees/new/EmployeeForm";
 
 export default async function EditEmployeePage() {
   return (
@@ -7,7 +8,7 @@ export default async function EditEmployeePage() {
       <div className="card w-full">
         <div className="justify-content-between flex">
           <h1>Editar Funcionário</h1>
-          <Link href="/dashboard/clients">
+          <Link href="/dashboard/employees">
             <Button
               label="Voltar"
               outlined
@@ -16,7 +17,9 @@ export default async function EditEmployeePage() {
             />
           </Link>
         </div>
-        <div className="mt-8"></div>
+        <div className="mt-8">
+          <NewEmployeeForm />
+        </div>
       </div>
     </div>
   );
