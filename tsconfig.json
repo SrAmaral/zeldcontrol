@@ -13,6 +13,7 @@
     "noUncheckedIndexedAccess": true,
     "checkJs": true,
     /* Bundled projects */
+    "strictNullChecks": true,
     "lib": [
       "dom",
       "dom.iterable",

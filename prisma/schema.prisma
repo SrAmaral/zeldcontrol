@@ -39,3 +39,42 @@ model Client {
   updatedAt       DateTime? @updatedAt()
   contacts        Json?
 }
+
+model Employee {
+  id            Int            @id() @default(autoincrement())
+  firstName     String
+  lastName      String?
+  rg            String?
+  cpf           String?
+  pis           String?
+  ctps          String?
+  contactNumber String?
+  contactEmail  String?        @unique()
+  address       Json?
+  typeHiring    String?
+  hiringDate    String?
+  position      String?
+  salary        String?
+  workLoad      String?
+  comment       String?
+  image         EmployeeImage?
+  files         EmployeeFile[]
+}
+
+model EmployeeFile {
+  id         Int      @id() @default(autoincrement())
+  filename   String
+  url        String
+  type       String
+  employeeId Int
+  employee   Employee @relation(fields: [employeeId], references: [id])
+}
+
+model EmployeeImage {
+  id         Int      @id() @default(autoincrement())
+  filename   String
+  url        String
+  type       String
+  employeeId Int      @unique()
+  employee   Employee @relation(fields: [employeeId], references: [id])
+}

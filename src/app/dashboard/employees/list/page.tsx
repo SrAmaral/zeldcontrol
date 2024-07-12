@@ -1,17 +1,16 @@
 import Link from "next/link";
 import { Button } from "primereact/button";
-import ListClientComponent from "~/components/Clients/list/ListClient";
 import { db } from "~/server/db";
+import ListEmployeeComponent from "../../../../components/Employees/list/ListEmployee";
 
-export default async function ListClientPage() {
-  const clients = await db.client.findMany();
-
+export default async function ListEmployeePage() {
+  const employees = await db.employee.findMany();
   return (
     <div className="col-12 card grid h-full p-0">
       <div className="card w-full">
         <div className="justify-content-between flex">
-          <h1>Listagem de Clientes</h1>
-          <Link href="/dashboard/clients">
+          <h1>Listagem de Funcionário</h1>
+          <Link href="/dashboard/employees">
             <Button
               label="Voltar"
               outlined
@@ -20,7 +19,7 @@ export default async function ListClientPage() {
             />
           </Link>
         </div>
-        <ListClientComponent clients={clients} />
+        <ListEmployeeComponent employees={employees} />
       </div>
     </div>
   );
