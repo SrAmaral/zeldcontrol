@@ -1,14 +1,18 @@
 import Link from "next/link";
 import { Button } from "primereact/button";
-import NewEmployeeForm from "~/components/Employees/new/EmployeeForm";
+import NewRequestForm from "~/components/Requests/new/RequestForm";
 
-export default async function NewEmployeePage() {
+export const metadata = {
+  title: "Editar",
+};
+
+export default function EditProductRequest() {
   return (
     <div className="col-12 card grid h-full p-0">
       <div className="card w-full">
         <div className="justify-content-between flex">
-          <h1>Novo Funcionário</h1>
-          <Link href="/dashboard/employees/list">
+          <h1>Editar Solicitação</h1>
+          <Link href="/dashboard/product_requests/list">
             <Button
               label="Voltar"
               outlined
@@ -18,7 +22,7 @@ export default async function NewEmployeePage() {
           </Link>
         </div>
         <div className="mt-8">
-          <NewEmployeeForm />
+          <NewRequestForm />
         </div>
       </div>
     </div>

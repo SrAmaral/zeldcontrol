@@ -24,7 +24,7 @@ model SystemUser {
 }
 
 model Client {
-    id              Int       @id @default(autoincrement())
+    id              Int              @id @default(autoincrement())
     fantasyName     String?
     companyName     String
     cnpj            String
@@ -34,9 +34,10 @@ model Client {
     address         Json?
     contactNumber   String?
     contactEmail    String?
-    createdAt       DateTime? @default(now())
-    updatedAt       DateTime? @updatedAt
+    createdAt       DateTime?        @default(now())
+    updatedAt       DateTime?        @updatedAt
     contacts        Json?
+    requests        ProductRequest[]
 }
 
 model Employee {
@@ -75,6 +76,17 @@ model EmployeeImage {
     type       String
     employeeId Int      @unique
     employee   Employee @relation(fields: [employeeId], references: [id])
+}
+
+model ProductRequest {
+    id        Int      @id @default(autoincrement())
+    status    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    deadLine  String?
+    clientId  Int?
+    client    Client?  @relation(fields: [clientId], references: [id])
+    items     Json
 }
 
 // model OrdemServico {
