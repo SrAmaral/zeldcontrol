@@ -54,6 +54,22 @@ const AppMenu = () => {
             },
           ],
         },
+        {
+          label: "Solicitações",
+          icon: "pi pi-calendar-plus",
+          items: [
+            {
+              label: "Dashboard de Solicitações",
+              icon: "pi pi-th-large",
+              to: "/dashboard/employees",
+            },
+            {
+              label: "Listagem de Solicitações",
+              icon: "pi pi-calendar",
+              to: "/dashboard/product_requests",
+            },
+          ],
+        },
       ],
     },
   ];
