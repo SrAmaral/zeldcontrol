@@ -6,20 +6,20 @@ import { DataTable } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import React, { useEffect, useState } from "react";
-import { DeleteClientById } from "../new/ClientRequest";
-import { type ClientDataType } from "../new/NewClientsTypes";
+import { type RequestDataType } from "../new/NewRequestTypes";
+import { DeleteRequestById } from "../new/RequestRequest";
 
-type ListClientComponentType = {
-  clients: ClientDataType[];
+type ListRequestComponentType = {
+  requests: RequestDataType[];
 };
 
-export default function ListClientComponent({
-  clients,
-}: ListClientComponentType) {
+export default function ListRequestsComponent({
+  requests,
+}: ListRequestComponentType) {
   const router = useRouter();
   const [diologVisible, setDialogVisible] = useState(false);
-  const [clientsData, setClientsData] = useState<ClientDataType[]>([]);
-  const [clientToDelete, setClientToDelete] = useState<number | undefined>();
+  const [requestsData, setRequestsData] = useState<RequestDataType[]>([]);
+  const [requestToDelete, setRequestToDelete] = useState<number | undefined>();
   const [filter, setFilter] = useState<string>("");
 
   const filterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,14 +29,15 @@ export default function ListClientComponent({
 
   useEffect(() => {
     if (!!filter) {
-      const filteredClients = clients.filter((client) => {
-        return client.companyName.toLowerCase().includes(filter.toLowerCase());
+      const filteredRequests = requests.filter((request) => {
+        return request.id.toString().includes(filter);
       });
-      setClientsData(filteredClients);
+
+      setRequestsData(filteredRequests);
     } else {
-      setClientsData(clients);
+      setRequestsData(requests);
     }
-  }, [filter, clients]);
+  }, [filter, requests]);
 
   const clearFilter = () => {
     setFilter("");
@@ -49,8 +50,8 @@ export default function ListClientComponent({
           <Button
             type="button"
             icon="pi pi-plus-circle"
-            label="Criar um novo cliente"
-            onClick={() => router.push("/dashboard/clients/new")}
+            label="Criar uma nova solicitação"
+            onClick={() => router.push("/dashboard/product_requests/new")}
           />
           <Button
             type="button"
@@ -65,6 +66,7 @@ export default function ListClientComponent({
             <i className="pi pi-search" />
             <InputText
               id="filter"
+              placeholder="Filtrar por ID"
               type="text"
               value={filter}
               onChange={(e) => filterChange(e)}
@@ -75,7 +77,7 @@ export default function ListClientComponent({
     );
   };
 
-  const actionBodyTemplate = (rowData: ClientDataType) => {
+  const actionBodyTemplate = (rowData: RequestDataType) => {
     return (
       <div className="justify-content-center flex gap-4">
         <Button
@@ -87,7 +89,7 @@ export default function ListClientComponent({
           icon="pi pi-trash"
           severity="danger"
           onClick={() => {
-            setClientToDelete(rowData.id);
+            setRequestToDelete(Number(rowData.id));
             setDialogVisible(true);
           }}
           rounded
@@ -96,12 +98,12 @@ export default function ListClientComponent({
     );
   };
 
-  const handleEdit = (client: ClientDataType) => {
-    router.push(`/dashboard/clients/${client.id}`);
+  const handleEdit = (request: RequestDataType) => {
+    router.push(`/dashboard/product_requests/${request.id}`);
   };
 
   const handleDelete = async () => {
-    await DeleteClientById(clientToDelete!);
+    await DeleteRequestById(requestToDelete!);
   };
 
   const footerContentDiolog = (
@@ -119,8 +121,10 @@ export default function ListClientComponent({
           setDialogVisible(false);
           try {
             await handleDelete();
-            setClientsData(
-              clientsData.filter((client) => client.id !== clientToDelete),
+            setRequestsData(
+              requestsData.filter(
+                (request) => Number(request.id) !== requestToDelete,
+              ),
             );
           } catch (error) {
             console.log(error);
@@ -134,22 +138,22 @@ export default function ListClientComponent({
   return (
     <div>
       <Dialog
-        header="Exluir cliente"
+        header="Exluir Solicitação"
         visible={diologVisible}
         style={{ width: "50vw" }}
         onHide={() => setDialogVisible(false)}
         footer={footerContentDiolog}
       >
         <p className="m-0 flex text-3xl font-bold">
-          Tem certeza que deseja excluir este cliente?
+          Tem certeza que deseja excluir esta solicitação?
         </p>
         <p className="m-0 mt-4 flex text-xl">
-          Ao excluir este cliente, os dados do mesmo serão perdidos
+          Ao excluir esta solicitação, os dados do mesmo serão perdidos
         </p>
       </Dialog>
 
       <DataTable
-        value={clientsData}
+        value={requestsData}
         paginator
         className="p-datatable-gridlines mt-8"
         showGridlines
@@ -159,21 +163,35 @@ export default function ListClientComponent({
         responsiveLayout="scroll"
         emptyMessage="No customers found."
         header={renderHeader}
-        globalFilterFields={["companyName", "cnpj"]}
+        globalFilterFields={["id", "status", "deadLine", "qtyRequests"]}
       >
         <Column
-          field="companyName"
-          header="Nome"
+          field="id"
+          header="ID"
           alignHeader={"center"}
           sortable
-          style={{ minWidth: "12rem", maxWidth: "17rem" }}
+          style={{ minWidth: "1rem", textAlign: "center" }}
         />
         <Column
-          field="cnpj"
-          header="CNPJ"
+          field="status"
+          header="Status"
           alignHeader={"center"}
           sortable
-          style={{ minWidth: "10rem", textAlign: "center" }}
+          style={{ minWidth: "1rem", textAlign: "center" }}
+        />
+        <Column
+          field="deadLine"
+          header="Data Limite"
+          alignHeader={"center"}
+          sortable
+          style={{ textAlign: "center" }}
+        />
+        <Column
+          field="qtyRequests"
+          header="Quantidade de Solicitações"
+          alignHeader={"center"}
+          sortable
+          style={{ maxWidth: "4em", textAlign: "center" }}
         />
         <Column
           header="Ações"

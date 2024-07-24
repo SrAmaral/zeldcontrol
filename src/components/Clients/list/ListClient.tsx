@@ -65,6 +65,7 @@ export default function ListClientComponent({
             <i className="pi pi-search" />
             <InputText
               id="filter"
+              placeholder="Filtrar por nome"
               type="text"
               value={filter}
               onChange={(e) => filterChange(e)}

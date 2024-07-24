@@ -8,7 +8,7 @@ export default async function NewClientPage() {
       <div className="card w-full">
         <div className="justify-content-between flex">
           <h1>Novo Cliente</h1>
-          <Link href="/dashboard/clients">
+          <Link href="/dashboard/clients/list">
             <Button
               label="Voltar"
               outlined

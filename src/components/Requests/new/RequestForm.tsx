@@ -1,21 +1,25 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
+import { Divider } from "primereact/divider";
 import { InputNumber } from "primereact/inputnumber";
 import { InputTextarea } from "primereact/inputtextarea";
 import { ListBox } from "primereact/listbox";
+import { Skeleton } from "primereact/skeleton";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   NewRequestFormSchema,
   type NewRequestFormSchemaType,
 } from "./NewRequestTypes";
+import { CreateRequest, GetRequestById, UpdateRequest } from "./RequestRequest";
 
 export default function NewRequestForm() {
-  const [findingCNPJ, setFindingCNPJ] = useState("");
   const {
     register,
     handleSubmit,
@@ -26,39 +30,55 @@ export default function NewRequestForm() {
   } = useForm<NewRequestFormSchemaType>({
     resolver: zodResolver(NewRequestFormSchema),
     defaultValues: {
-      items: [{ description: "", serviceType: "", priority: "", qty: "0" }],
+      items: [
+        {
+          description: "",
+          serviceType: {
+            name: "",
+            code: "",
+          },
+          priority: {
+            name: "",
+            code: "",
+          },
+          qty: "0",
+        },
+      ],
       deadLine: "",
     },
   });
 
-  const { clientId } = useParams();
-  const [isRequest, setIsCLient] = useState(false);
+  const { requestId } = useParams();
+  const [isRequest, setIsRequest] = useState(false);
   const pathName = usePathname();
-  const [loading, setLoading] = useState(pathName !== "/dashboard/clients/new");
+  const [loading, setLoading] = useState(
+    pathName !== "/dashboard/product_requests/new",
+  );
   const formValues = watch();
 
   const router = useRouter();
 
   const fetchRequest = async () => {
-    // if (!!clientId) {
-    //   try {
-    //     const client = await GetRequestRequest(Number(clientId));
-    //     if (!!client) {
-    //       setIsCLient(true);
-    //       setLoading(false);
-    //       Object.entries(client).forEach(([key, value]) => {
-    //         const keyName = key as keyof NewRequestFormSchemaType;
-    //         const valueName = value as string;
-    //         setValue(keyName, valueName);
-    //       });
-    //     } else {
-    //       setIsCLient(false);
-    //       setLoading(false);
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
+    if (!!requestId) {
+      try {
+        const request = await GetRequestById(Number(requestId));
+        console.log(request);
+        if (!!request) {
+          setIsRequest(true);
+          setLoading(false);
+          Object.entries(request).forEach(([key, value]) => {
+            const keyName = key as keyof NewRequestFormSchemaType;
+            const valueName = value as string;
+            setValue(keyName, valueName);
+          });
+        } else {
+          setIsRequest(false);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -66,19 +86,29 @@ export default function NewRequestForm() {
   }, []);
 
   async function handleCreateRequest(data: NewRequestFormSchemaType) {
-    console.log(data);
-    // if (!!clientId) {
-    //   await UpdateRequestRequest(Number(clientId), data);
-    //   setTimeout(() => router.push("/dashboard/clients"), 2000);
-    // } else {
-    //   await CreateRequestRequest(data);
-    //   setTimeout(() => router.push("/dashboard/clients"), 2000);
-    // }
+    if (!!requestId) {
+      await UpdateRequest(Number(requestId), data);
+      setTimeout(() => router.push("/dashboard/product_requests/list"), 2000);
+    } else {
+      await CreateRequest(data);
+      setTimeout(() => router.push("/dashboard/product_requests/list"), 2000);
+    }
   }
 
   const addNewItem = () => {
     const items = getValues("items");
-    items.push({ description: "", serviceType: "", priority: "", qty: "" });
+    items.push({
+      description: "",
+      serviceType: {
+        name: "",
+        code: "",
+      },
+      priority: {
+        name: "",
+        code: "",
+      },
+      qty: "",
+    });
     setValue("items", items);
   };
   const removeItem = (index: number) => {
@@ -88,10 +118,14 @@ export default function NewRequestForm() {
   };
 
   const showForm =
-    pathName === "/dashboard/clients/new" ? true : isRequest ? true : false;
+    pathName === "/dashboard/product_requests/new"
+      ? true
+      : isRequest
+        ? true
+        : false;
   return (
     <>
-      {/* {loading && (
+      {loading && (
         <div className="col 12 grid gap-5">
           <Skeleton className="w-full" height="2.5rem" />
           <Skeleton className="w-full" height="2.5rem" />
@@ -100,19 +134,9 @@ export default function NewRequestForm() {
           <Skeleton className="w-full" height="2.5rem" />
           <Skeleton className="w-full" height="2.5rem" />
         </div>
-      )} */}
-      {/* {showForm && ( */}
-      <form onSubmit={handleSubmit(handleCreateRequest)}>
-        <div className="col-12 card grid gap-5">
-          <h1>Criar SOlicitação</h1>
-          <div className="p-fluid row-gap-4 formgrid col-12 grid">
-            <Button
-              label="Adicionar solicitação"
-              icon="pi pi-plus"
-              className="col-2 sm:col-4 h-3rem"
-              onClick={() => addNewItem()}
-            />
-          </div>
+      )}
+      {showForm && (
+        <form onSubmit={handleSubmit(handleCreateRequest)}>
           <div className="p-fluid row-gap-4 formgrid col-12 mt-8 grid">
             {getValues("items")?.map((item, index) => (
               <div key={index} className="col-12 grid">
@@ -148,7 +172,7 @@ export default function NewRequestForm() {
                     onChange={(e) => {
                       setValue(
                         `items.${index}.serviceType` as const,
-                        e.value as string,
+                        e.value as object,
                       );
                     }}
                     options={[
@@ -174,7 +198,7 @@ export default function NewRequestForm() {
                     onChange={(e) => {
                       setValue(
                         `items.${index}.priority` as const,
-                        e.value as string,
+                        e.value as object,
                       );
                     }}
                     options={[
@@ -220,7 +244,20 @@ export default function NewRequestForm() {
                 />
               </div>
             ))}
-            <div className="field col-12 md:col-6">
+            <div className="p-fluid row-gap-4 formgrid col-12 mt-4 grid">
+              <Button
+                type="button"
+                label="Adicionar solicitação"
+                icon="pi pi-plus"
+                outlined
+                className="col-2 h-3rem"
+                style={{ paddingLeft: "1rem" }}
+                onClick={() => addNewItem()}
+              />
+            </div>
+            <Divider className="mt-6" />
+
+            <div className="field col-12 md:col-6 mt-4">
               <span className="p-float-label">
                 <Calendar
                   id="deadline"
@@ -233,7 +270,9 @@ export default function NewRequestForm() {
                   onChange={(e) => {
                     setValue(
                       "deadLine" as const,
-                      e.target.value ? e.target.value.toString() : "",
+                      e.target.value
+                        ? new Date(e.target.value).toDateString()
+                        : "",
                     );
                   }}
                 />
@@ -241,29 +280,30 @@ export default function NewRequestForm() {
               </span>
             </div>
           </div>
-        </div>
-        <div className="justify-content-end flex">
-          <Button
-            label={!!clientId ? "Atualizar Solicitação" : "Criar Solicitação"}
-            type="submit"
-            className="mt-4 w-4"
-          />
-        </div>
-      </form>
-      {/* )} */}
+          <div className="justify-content-end flex">
+            <Button
+              label={
+                !!requestId ? "Atualizar Solicitação" : "Criar Solicitação"
+              }
+              type="submit"
+              className="mt-4 w-4"
+            />
+          </div>
+        </form>
+      )}
       {!showForm && !loading && (
         <div className="justify-content-center align-items-center mb-8 flex h-fit">
           <div className="z-1 text-center">
             <div className="text-900 mb-4 text-8xl font-bold">Oops!</div>
             <p className="line-height-3 text-700 mb-5 mt-0 text-xl font-medium">
-              Este cliente não foi encontrado em nossa base de dados.
+              Esta solicitação não foi encontrado em nossa base de dados.
             </p>
-            <Link href={"/dashboard/clients"}>
+            <Link href={"/dashboard/product_requests/list"}>
               <button
                 type="button"
                 className="p-button p-button-warning p-button-raised font-medium"
               >
-                Voltar para clientes
+                Voltar para Solicitações
               </button>
             </Link>
           </div>

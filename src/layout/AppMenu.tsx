@@ -61,12 +61,12 @@ const AppMenu = () => {
             {
               label: "Dashboard de Solicitações",
               icon: "pi pi-th-large",
-              to: "/dashboard/employees",
+              to: "/dashboard/product_requests",
             },
             {
               label: "Listagem de Solicitações",
               icon: "pi pi-calendar",
-              to: "/dashboard/product_requests",
+              to: "/dashboard/product_requests/list",
             },
           ],
         },
