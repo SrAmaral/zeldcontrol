@@ -15,6 +15,7 @@ export const NewRequestFormSchema = z.object({
       code: z.string().optional(),
     }).optional(),
     qty: z.string().optional(),
+    price: z.number().optional()
   })),
   deadLine: z
     .string()
@@ -33,5 +34,6 @@ export interface RequestDataType {
     serviceType: string;
     priority: string;
     qty: string;
+    price: number;
   }[];
 }

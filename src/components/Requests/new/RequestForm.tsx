@@ -42,6 +42,7 @@ export default function NewRequestForm() {
             code: "",
           },
           qty: "0",
+          price: 0,
         },
       ],
       deadLine: "",
@@ -50,6 +51,7 @@ export default function NewRequestForm() {
 
   const { requestId } = useParams();
   const [isRequest, setIsRequest] = useState(false);
+  const [status, setStatus] = useState("");
   const pathName = usePathname();
   const [loading, setLoading] = useState(
     pathName !== "/dashboard/product_requests/new",
@@ -62,7 +64,7 @@ export default function NewRequestForm() {
     if (!!requestId) {
       try {
         const request = await GetRequestById(Number(requestId));
-        console.log(request);
+        setStatus(request?.status ?? "");
         if (!!request) {
           setIsRequest(true);
           setLoading(false);
@@ -93,6 +95,11 @@ export default function NewRequestForm() {
       await CreateRequest(data);
       setTimeout(() => router.push("/dashboard/product_requests/list"), 2000);
     }
+  }
+  async function handleApprove() {
+    const finalData = { ...formValues, status: "requestQuotation" };
+    await UpdateRequest(Number(requestId), finalData);
+    setTimeout(() => router.push("/dashboard/product_requests/list"), 2000);
   }
 
   const addNewItem = () => {
@@ -234,6 +241,27 @@ export default function NewRequestForm() {
                     }}
                   />
                 </div>
+                {status !== "open" && (
+                  <div className="field col-1 sm:col-2 " key={index + "price"}>
+                    <label htmlFor="price" className="mb-2 ">
+                      Valor
+                    </label>
+                    <InputNumber
+                      id="qty"
+                      mode="currency"
+                      currency="BRL"
+                      locale="pt-BR"
+                      value={Number(formValues.items[index]?.price)}
+                      onValueChange={(e) => {
+                        setValue(
+                          `items.${index}.price` as const,
+                          e.target.value ?? 0,
+                        );
+                      }}
+                    />
+                  </div>
+                )}
+
                 <Button
                   label=""
                   key={index + "delete"}
@@ -280,7 +308,16 @@ export default function NewRequestForm() {
               </span>
             </div>
           </div>
-          <div className="justify-content-end flex">
+          <div className="justify-content-between mt-4 flex">
+            {status === "open" && (
+              <Button
+                severity="success"
+                label={"Aprovar Solicitação"}
+                type="button"
+                className="mt-4 w-4"
+                onClick={() => handleApprove()}
+              />
+            )}
             <Button
               label={
                 !!requestId ? "Atualizar Solicitação" : "Criar Solicitação"
