@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 
-export type NewRequestFormSchemaType = z.infer<typeof NewRequestFormSchema>;
+export type NewQuotationFormSchemaType = z.infer<typeof NewQuotationFormSchema>;
 
-export const NewRequestFormSchema = z.object({
+export const NewQuotationFormSchema = z.object({
   items: z.array(z.object({
     description: z.string().optional(),
     serviceType: z.object({
@@ -22,7 +22,7 @@ export const NewRequestFormSchema = z.object({
     .optional(),
 });
 
-export interface RequestDataType {
+export interface QuotationDataType {
   id: number;
   status: string;
   createdAt: Date;
@@ -36,4 +36,18 @@ export interface RequestDataType {
     qty: string;
     price: number;
   }[];
+}
+
+export type QuotationItemsType = {
+  description?: string | undefined;
+  serviceType?: {
+      code?: string | undefined;
+      name?: string | undefined;
+  } | undefined;
+  priority?: {
+      code?: string | undefined;
+      name?: string | undefined;
+  } | undefined;
+  qty?: string | undefined;
+  price?: number | undefined;
 }
