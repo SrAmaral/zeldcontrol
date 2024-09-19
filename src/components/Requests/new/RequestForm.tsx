@@ -251,7 +251,7 @@ export default function NewRequestForm() {
                       mode="currency"
                       currency="BRL"
                       locale="pt-BR"
-                      value={Number(formValues.items[index]?.price)}
+                      value={Number(formValues.items[index]?.price || 0)}
                       onValueChange={(e) => {
                         setValue(
                           `items.${index}.price` as const,
@@ -318,12 +318,23 @@ export default function NewRequestForm() {
                 onClick={() => handleApprove()}
               />
             )}
+            {status !== "open" && (
+              <Button
+                severity="success"
+                label={"Ir para Cotação"}
+                type="button"
+                className="mt-4 w-4"
+                onClick={() =>
+                  router.push(`/dashboard/quotation/${requestId?.toString()}`)
+                }
+              />
+            )}
             <Button
               label={
                 !!requestId ? "Atualizar Solicitação" : "Criar Solicitação"
               }
               type="submit"
-              className="mt-4 w-4"
+              className="ml-auto mt-4 w-4"
             />
           </div>
         </form>

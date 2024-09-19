@@ -16,6 +16,12 @@ export default async function ListEmployeePage() {
         return "Aprovado";
       case "REJECTED":
         return "Rejeitado";
+      case "requestQuotation":
+        return "Cotação em Aberto";
+      case "quotationApproved":
+        return "Cotação Aprovada";
+      case "quotationReproved":
+        return "Cotação Rejeitada";
       default:
         return "Pendente";
     }
