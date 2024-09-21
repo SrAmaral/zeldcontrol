@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { useEffect, useState } from "react";
@@ -21,9 +21,6 @@ import {
 
 export default function QuotationComponent() {
   const {
-    register,
-    handleSubmit,
-    getValues,
     setValue,
     watch,
     formState: { errors },
@@ -50,14 +47,9 @@ export default function QuotationComponent() {
   });
 
   const { quotationId } = useParams();
-  const [isRequest, setIsRequest] = useState(false);
   const [diologVisible, setDialogVisible] = useState(false);
   const [diologType, setDialogType] = useState<string>("");
   const [status, setStatus] = useState("");
-  const pathName = usePathname();
-  const [loading, setLoading] = useState(
-    pathName !== "/dashboard/product_requests/new",
-  );
   const formValues = watch();
 
   const router = useRouter();
@@ -68,16 +60,11 @@ export default function QuotationComponent() {
         const request = await GetQuotationById(Number(quotationId));
         setStatus(request?.status ?? "");
         if (!!request) {
-          setIsRequest(true);
-          setLoading(false);
           Object.entries(request).forEach(([key, value]) => {
             const keyName = key as keyof NewQuotationFormSchemaType;
             const valueName = value as string;
             setValue(keyName, valueName);
           });
-        } else {
-          setIsRequest(false);
-          setLoading(false);
         }
       } catch (error) {
         console.log(error);
@@ -88,43 +75,6 @@ export default function QuotationComponent() {
   useEffect(() => {
     void fetchRequest();
   }, []);
-
-  async function handleCreateRequest(data: NewQuotationFormSchemaType) {
-    // if (!!quotationId) {
-    //   await UpdateRequest(Number(quotationId), data);
-    //   setTimeout(() => router.push("/dashboard/product_requests/list"), 2000);
-    // } else {
-    //   await CreateRequest(data);
-    //   setTimeout(() => router.push("/dashboard/product_requests/list"), 2000);
-    // }
-  }
-  // async function handleApprove() {
-  //   const finalData = { ...formValues, status: "requestQuotation" };
-  //   await UpdateRequest(Number(quotationId), finalData);
-  //   setTimeout(() => router.push("/dashboard/product_requests/list"), 2000);
-  // }
-
-  const addNewItem = () => {
-    const items = getValues("items");
-    items.push({
-      description: "",
-      serviceType: {
-        name: "",
-        code: "",
-      },
-      priority: {
-        name: "",
-        code: "",
-      },
-      qty: "",
-    });
-    setValue("items", items);
-  };
-  const removeItem = (index: number) => {
-    const items = getValues("items");
-    items.splice(index, 1);
-    setValue("items", items);
-  };
 
   const convertToMonetary = (value: string | number) => {
     let newValue: number | string = value;
